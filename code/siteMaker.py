@@ -1,34 +1,48 @@
 import requests
 import config
 
-def createSite():
+# This function creates new sites on the NCR Platform
+def create(request):
     url = 'https://gateway-staging.ncrcloud.com/site/sites'
-    payload = "{\"id\":\"mbkm8lhlvz37we91\",\"siteName\":\"Burgers Unlimited Highlands\",\"enterpriseUnitName\":\"Burgers Unlimited\",\"hours\":[],\"contact\":{\"contactPerson\":\"James Burger\",\"phoneNumber\":\"4041231234\",\"phoneNumberCountryCode\":\"44\"},\"timeZone\":\"US/Eastern\",\"locked\":true,\"description\":\"The Highlands location of the award-winning burger chain Burgers Unlimited .\",\"currency\":\"USD\",\"address\":{\"city\":\"Atlanta\",\"country\":\"USA\",\"postalCode\":\"30308\",\"state\":\"GA\",\"street\":\"1234 Main Street\"},\"coordinates\":{\"latitude\":33.6817952,\"longitude\":-84.4239568},\"status\":\"ACTIVE\",\"parentEnterpriseUnitId\":\"String\",\"customAttributeSets\":[{\"attributes\":[{\"key\":\"key\",\"value\":\"value\"}],\"typeName\":\"String\"}],\"referenceId\":\"String\",\"dayparts\":[]}"
 
     headers = {
-        'nep-correlation-id': 'ojrz4z940etr6a73',
-        'nep-organization': config.NEP_ORGANIZATION,
+        'content-type': 'application/json',
+        'nep-organization': 'burgers-unlimited',
+        'nep-correlation-id': '2020-0708'
     }
 
-    r = requests.post(url,auth=(config.USER,config.PASSWORD),headers = headers)
+    paylo1ad = "{\"id\":\"a6c0b9c5ed4c40f8\",\"siteName\":\"NCR's World Headquarters\",\"enterpriseUnitName\":\"NCR World Headquarters\",\"hours\":[],\"contact\":{\"contactPerson\":\"George Burdell\",\"phoneNumber\":\"6787323274\",\"phoneNumberCountryCode\":\"44\"},\"timeZone\":\"US/Eastern\",\"locked\":true,\"description\":\"A state-of-the-art campus designed to attract top talent, showcase NCRs technology solutions and serve as an iconic landmark for the City of Atlanta.\",\"currency\":\"USD\",\"address\":{\"city\":\"Atlanta\",\"country\":\"USA\",\"postalCode\":\"30308\",\"state\":\"GA\",\"street\":\"860 Spring St. NW\"},\"coordinates\":{\"latitude\":33.6817952,\"longitude\":-84.4239568},\"status\":\"ACTIVE\",\"parentEnterpriseUnitId\":\"a6c0b9c5ed4c40f8bf584dcb562b47eb\",\"customAttributeSets\":[{\"attributes\":[{\"key\":\"key\",\"value\":\"value\"}],\"typeName\":\"String\"}],\"referenceId\":\"String\",\"dayparts\":[]}"
+    payload =  "{\"siteName\":\"Burgers Unlimited Southland\",\"enterpriseUnitName\":\"Burgers Unlimited Southland\",\"hours\":[],\"contact\":{\"contactPerson\":\"James Burgerman\",\"phoneNumber\":\"6787323274\",\"phoneNumberCountryCode\":\"44\"},\"timeZone\":\"US/Eastern\",\"locked\":true,\"description\":\"The Southland location of the award winning burger chain Burgers Unlimited.\",\"currency\":\"USD\",\"address\":{\"city\":\"Atlanta\",\"country\":\"USA\",\"postalCode\":\"30308\",\"state\":\"GA\",\"street\":\"860 Spring St. NW\"},\"coordinates\":{\"latitude\":33.6817952,\"longitude\":-84.4239568},\"status\":\"ACTIVE\",\"dayparts\":[]}"
+    r = requests.post(url, payload, auth=(config.USER, config.PASSWORD), headers=headers)
+    print (r)
 
-    print(r)
 
+# This function allows you to locate information about the site using the site name
+def query(locationName):
+        url = 'https://gateway-staging.ncrcloud.com/site/sites/find-by-criteria?pageSize=10000'
 
+        payload = "{\n\t\"criteria\": {\n\t\t\"siteName\": \"%s\",\n\t\t\"status\": \"ACTIVE\"\n\t}\n}" %locationName
 
+        headers = {
+            'content-type': 'application/json',
+            'nep-organization': 'burgers-unlimited',
+            'nep-correlation-id': '2020-0708'
+        }
 
-def getSite():
-    url = 'https://gateway-staging.ncrcloud.com/site/sites/mbkm8lhlvz37we91'
+        r = requests.post(url, payload, auth=(config.USER, config.PASSWORD), headers=headers)
+        print(r.json())
+
+def update(id):
+    url = url = 'https://gateway-staging.ncrcloud.com/site/sites/?%s'%id
+
+    payload =""
+
 
     headers = {
-        'nep-correlation-id': 'ojrz4z940etr6a73',
-        'nep-organization': config.NEP_ORGANIZATION,
+        'content-type': 'application/json',
+        'nep-organization': 'burgers-unlimited',
+        'nep-correlation-id': '2020-0708'
     }
-
-    r = requests.get(url,auth=(config.USER,config.PASSWORD),headers=headers)
-
-    print(r)
-
 
 
 
