@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<!--
+<form id="Information" action="findRestaurant" method="post" onsubmit="grabData()">
+    {% csrf_token %}
+
+    <label for="restaurant-search">Enter your address:</label>
+    <input type="search" id="restaurant-search" aria-label="Search for nearby restaurants">
+
+    <select id="radius">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+
+    <input type="submit" value="Search">
+
+
+
+</form>
+
+-->
+
+
+    {% csrf_token %}
+<label for="restaurant-search">Enter your address:</label>
+<input type="search" id="restaurant-search" aria-label="Search for nearby restaurants">
+
+<select id="radius">
+   <option value="5">5</option>
+   <option value="10">10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+</select>
+
+
+<button onclick="grabData()">Search</button>
+</form>
+
+
+
+    function grabData(){
+
+    var parse = document.getElementById("radius");
+    var radius = parse.options[parse.selectedIndex].text;
+    var address = document.getElementById("restaurant-search").value;
+    console.log(radius);
+    console.log(address);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", 'findRestaurant',true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify({
+	    value1: radius,
+	    value2: address }));
+    }
+
+
+</script>
+{% endblock %}
