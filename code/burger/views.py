@@ -7,6 +7,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from  django.http import HttpResponse
 import config
+import auxMethods
 
 
 def index(request):
@@ -17,7 +18,23 @@ def index(request):
 
 def findRestaurant(request):
 
-    print("Recived", request.GET , request.POST, request.body)
+
+    address = request.POST['address']
+    radius = int(request.POST['radius'])
+
+    coordinates = auxMethods.geoCodeAddress(address)
 
 
-    return render(request,'findRestaurant.html')
+
+
+    context = {'address': address , "radius" : radius , 'coordinates' : coordinates}
+
+
+    # How to insert separate method for geocoding?
+
+
+
+
+
+
+    return render(request,'findRestaurant.html', context)

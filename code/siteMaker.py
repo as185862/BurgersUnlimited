@@ -53,10 +53,10 @@ Returns: Nothing. (In Future) A Json containing the information about the update
 """
 
 
-def update(id):
+def update(id,name):
     url = url = 'https://gateway-staging.ncrcloud.com/site/sites/%s' %id
 
-    payload = "{\"siteName\":\"Burgers Unlimited Midtown\",\"enterpriseUnitName\":\"Burgers Unlimited Midtown\",\"coordinates\":{\"latitude\":33.6817,\"longitude\":84.4239},\"status\":\"ACTIVE\"}"
+    payload = "{\"siteName\":\"%s\",\"enterpriseUnitName\":\"%s\",\"coordinates\":{\"latitude\":33.6407,\"longitude\":-84.4277},\"status\":\"ACTIVE\"}" %(name,name)
 
     headers ={
         'content-type': 'application/json',
@@ -75,5 +75,4 @@ def update(id):
     }
 
 
-
-
+query("Burgers Unlimited Midtown")
