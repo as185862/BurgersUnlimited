@@ -2,8 +2,14 @@
 
 {% block content %}
 
-<h1> The passed address is  {{address}}</h1>
-<h1> The passed radius is {{radius}}</h1>
-<h1> The coordinates from that address are: {{coordinates}}</h1>
+    {% if not results %}
+        <h1>Sorry no results found in your area. Try entering another address or widening your radius </h1>
+        <button onclick="window.location.href='/';">Go Back</button>
+    {% else %}
+        <h1> The passed address is  {{address}}</h1>
+        <h1> The passed radius is {{radius}}</h1>
+        <h1> The coordinates from that address are: {{coordinates}}</h1>
+        <h1> Resturants in range :{{results}}</h1>
+    {% endif %}
 
 {% endblock %}

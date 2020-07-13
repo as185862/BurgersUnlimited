@@ -4,29 +4,29 @@ import json
 
 def geoCodeAddress(address):
 
-    url='https://geocoding.geo.census.gov/geocoder/locations/onelineaddress'
+    try:
+        url='https://geocoding.geo.census.gov/geocoder/locations/onelineaddress'
 
-    payload = {'address': address , 'benchmark' : '9', 'format' : 'json'}
+        payload = {'address': address , 'benchmark' : '9', 'format' : 'json'}
 
 
-    r = requests.get(url,params=payload)
-    temp = r.json()
+        r = requests.get(url,params=payload)
+        temp = r.json()
 
-    print(r.json())
-    rjson = json.dumps(temp)
-    rjson = json.loads(rjson)
-    result =rjson['result']['addressMatches'][0]['coordinates']
+        rjson = json.dumps(temp)
+        rjson = json.loads(rjson)
+        result =rjson['result']['addressMatches'][0]['coordinates']
+    except IndexError:
+        print("Address could not be found")
+    else:
 
-    print(result)
-    print(type(result))
-
-    return result
+        return result
 
 
 def findResturantsInRange(coordinates, radius):
 
     # The radius in this function is in meters, so unit that user enters needs to be converted to from miles to meters
-    meters = 1000
+    meters = 1609
     y = coordinates['y']
     x = coordinates ['x']
     circle = radius * meters
@@ -44,8 +44,24 @@ def findResturantsInRange(coordinates, radius):
     }
 
     r = requests.get(url,params=payload,auth=(config.USER, config.PASSWORD),headers=headers)
-    print(r.url)
-    print(r.json())
+
+
+    #print(r.json())
+
+   # print(r.json()['sites'][0])
+
+
+    temp = r.json()
+    rjson = json.dumps(temp)
+    rjson = json.loads(rjson)
+    sites = []
+
+
+    for site in rjson['sites']:
+        sites.append(site['siteName'])
+        print(site['siteName'])
+
+    return sites
 
 
 dict = {
@@ -55,4 +71,7 @@ dict = {
 rad=15
 
 geoCodeAddress('864 Spring St Nw, Atlanta, GA')
-findResturantsInRange(dict,rad)
+
+results =findResturantsInRange(dict,rad)
+
+print(results)

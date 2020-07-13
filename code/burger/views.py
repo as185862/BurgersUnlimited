@@ -23,11 +23,14 @@ def findRestaurant(request):
     radius = int(request.POST['radius'])
 
     coordinates = auxMethods.geoCodeAddress(address)
+    results  = auxMethods.findResturantsInRange(coordinates,radius)
 
 
 
 
-    context = {'address': address , "radius" : radius , 'coordinates' : coordinates}
+
+
+    context = {'address': address , "radius" : radius , 'coordinates' : coordinates, 'results' : results}
 
 
     # How to insert separate method for geocoding?
