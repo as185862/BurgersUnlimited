@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -6,10 +7,67 @@
         <h1>Sorry no results found in your area. Try entering another address or widening your radius </h1>
         <button onclick="window.location.href='/';">Go Back</button>
     {% else %}
+
+        <!--
         <h1> The passed address is  {{address}}</h1>
         <h1> The passed radius is {{radius}}</h1>
         <h1> The coordinates from that address are: {{coordinates}}</h1>
-        <h1> Resturants in range :{{results}}</h1>
-    {% endif %}
+        <h1> Restaurants in range :{{results}}</h1>
 
+        <img src="{% static 'images/southland.png' %}" > -->
+
+        <div class="container">
+
+        {% for result in results %}
+
+            {% if result == 'Burgers Unlimited Midtown' %}
+
+
+            <div class="card" style="25em;">
+                <div class="card-image">
+                    <img class="card-img-top" src="{% static 'images/midtown.png' %}">
+                </div>
+                <h5 class="card-title">{{result}}</h5>
+                <p class="card-text">{{coordinates}}</p>
+                <a href="#" class="btn btn-dark">See Menu</a>
+
+            </div>
+
+
+            {% elif result == 'Burgers Unlimited Southland' %}
+
+             <div class="card" style="25em;">
+                <div class="card-image">
+                    <img class="card-img-top" src="{% static 'images/southland.png' %}">
+                </div>
+                <h5 class="card-title">{{result}}</h5>
+                <p class="card-text">{{coordinates}}</p>
+                <a href="#" class="btn btn-dark">See Menu</a>
+
+            </div>
+
+
+            {% elif result == 'Burgers Unlimited Highlands' %}
+
+             <div class="card" style="25em;">
+                <div class="card-image">
+                    <img class="card-img-top" src="{% static 'images/Highlands.png' %}">
+                </div>
+                <h5 class="card-title">{{result}}</h5>
+                <p class="card-text">{{coordinates}}</p>
+                <a href="#" class="btn btn-dark">See Menu</a>
+
+            </div>
+
+            {% endif %}
+
+
+
+
+         {% endfor %}
+
+
+            </div>
+
+    {% endif %}
 {% endblock %}
