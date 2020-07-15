@@ -4,7 +4,9 @@ from burger import views
 urlpatterns = [
 
 path('',views.index, name='index'),
-path('findRestaurant',views.findRestaurant, name = 'findRestaurant')
-
+path('findRestaurant',views.findRestaurant, name = 'findRestaurant'),
+path('midtownMenu', views.midtownMenu, name = 'midtownMenu'),
+path('southlandMenu',views.southlandMenu, name='southlandMenu'),
+path('highlandsMenu',views.highlandsMenu,name='highlandsMenu')
 
 ]

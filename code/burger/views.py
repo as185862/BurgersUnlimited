@@ -25,19 +25,19 @@ def findRestaurant(request):
     coordinates = auxMethods.geoCodeAddress(address)
     results  = auxMethods.findResturantsInRange(coordinates,radius)
 
-
-
-
-
-
     context = {'address': address , "radius" : radius , 'coordinates' : coordinates, 'results' : results}
 
-
-    # How to insert separate method for geocoding?
-
-
-
-
-
-
     return render(request,'findRestaurant.html', context)
+
+
+def midtownMenu(request):
+
+    return render(request,'midtownMenu.html')
+
+def southlandMenu(request):
+
+    return render(request,'southlandMenu.html')
+
+def highlandsMenu(request):
+
+    return render(request,'highlandsMenu.html')
