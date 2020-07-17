@@ -70,8 +70,8 @@ dict = {
 }
 rad=15
 
-geoCodeAddress('864 Spring St Nw, Atlanta, GA')
+#geoCodeAddress('864 Spring St Nw, Atlanta, GA')
 
-results =findResturantsInRange(dict,rad)
+#results =findResturantsInRange(dict,rad)
 
-print(results)
+#print(results)
