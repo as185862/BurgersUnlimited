@@ -7,9 +7,12 @@ import re
 #TODO: Rewrite the menu call on the views page to filter name menu correctly
 #TODO: Place temp menu on hmtl page :D
 
+HIGHLANDS = config.Locations['Burgers Unlimited Highlands']
+SOUTHLAND = config.Locations['Burgers Unlimited Southland']
+MIDTOWN = config.Locations ['Burgers Unlimited Midtown']
+
 '''
 Description: This function creates new items in the site catalog associated with the enterpriseId passed to this function. BEWARE: There is no delete function within the catalog API
-
 Parameters: 
 -itemName [ The name of the item that you want to create. NOTICE: Spaces are not allowed]
 -version [ Which version of the itemName is this. NOTICE: When updating, you must increase this number]
@@ -21,7 +24,7 @@ Parameters:
 Returns: N/A
 '''
 
-
+#FIXME: Have a sucess & failure message
 def createItem(itemName, version, shortDescription ,location, department, enterpriseId):
     url = 'https://gateway-staging.ncrcloud.com/catalog/items/%s' %(itemName)
 
@@ -37,13 +40,13 @@ def createItem(itemName, version, shortDescription ,location, department, enterp
     r = requests.put(url, payload, auth=(config.USER, config.PASSWORD), headers=headers)
     print(r)
 
-
 '''
 Description: This function returns the item details of the itemName passed
-Parameters: itemName [ name of the item you want information about]
-Returns: Nothing right now ;p Under Construction
+Parameters: itemName [name of the item you want information about]
+Returns: returns the json of the item in question. If no results, returns nothing
 '''
 
+#FIXME: Have a return message to explain empty result
 def getItem(itemName):
     url = 'https://gateway-staging.ncrcloud.com/catalog/items/%s' %itemName
     headers = {
@@ -53,15 +56,16 @@ def getItem(itemName):
     }
 
     r = requests.get(url, auth=(config.USER,config.PASSWORD), headers = headers)
-    print(r.json())
 
+    return r.json()
 
 '''
-Description:
-Parameters:
-Returns:
+Description: This function will call the catalog bulk getItem function. It will grab all the items associated with a  particular site/resturant 
+Parameters: storeName [The name of the store you wish  to call  all the  items from]
+Returns: An array with the names of all the items within the storeName.
 '''
 
+#FIXME: Have a message display if no results found
 def getStoreItems(storeName):
     url = 'https://gateway-staging.ncrcloud.com/catalog/items?merchandiseCategoryId=%s'%storeName
     headers = {
@@ -76,40 +80,51 @@ def getStoreItems(storeName):
 
     for item in tempItems['pageContent']:
         for nestedItem in item['itemId'].values():
-            temp = nestedItem
-            result = addSpacesInbetweenCaptialLetters(temp)
-            storeItems.append(result)
+            storeItems.append(nestedItem)
 
+    #HACK: The  catalog api does not allow deletions. This is removing an error in the catalog
     if storeName == 'BurgersUnlimitedMidtown':
-        storeItems.remove('Hamburger Deleuxe')
+        storeItems.remove('HamburgerDeleuxe')
     return storeItems
 
 '''
-Description:
+Description: This function creates a priceItem within the catalog API. The priceItem and item are tied together by the itemCode. I am using itemName as a replacement for itemCode
+
 Parameters:
-Returns:
+-itemName [The name that you entered for the item, when you made it]
+-itemPriceId [ A unique id for the item. ]
+-version [ Which version of the itemName is this. NOTICE: When updating, you must increase this number]
+-price [How much the item will cost]
+-enterpriseId [ The alphanumeric id associated with the location. NOTICE: This was created when the site was created. If unknown use query() within siteMaker] 
+
+Returns: N/A
 '''
 
-def createPrice(itemName, itemPriceId, version, price):
+#FIXME: Return a conformation or failure message
+def createPrice(itemName, itemPriceId, version, price, enterpriseId):
     url = 'https://gateway-staging.ncrcloud.com/catalog/item-prices/%s/%s' % (itemName, itemPriceId)
 
     headers = {
         'content-type': 'application/json',
         'nep-organization': 'burgers-unlimited',
         'nep-correlation-id': '2020-0708',
-        'nep-enterprise-unit':'a6c0b9c5ed4c40f8bf584dca562b47eb',
+        'nep-enterprise-unit': '%s' %enterpriseId
     }
 
     payload = "{\"version\":%s,\"price\":%s,\"currency\":\"US Dollar\",\"effectiveDate\":\"2020-07-16T18:22:05.784Z\",\"status\":\"ACTIVE\"}" %(version, price)
     r = requests.put(url,payload,auth=(config.USER,config.PASSWORD),headers=headers)
 
-    print(r)
+    print(r.json)
 
 '''
-Description:
+Description: This function will find the priceItem from the associated itemName
 Parameters:
-Returns:
+-itemName [The name that you entered for the item, when you made it]
+-itemPriceId [The itemPriceId you entered when you created the item]
+-enterpriseId [ The alphanumeric id associated with the location. NOTICE: This was created when the site was created. If unknown use query() within siteMaker] 
+Returns: A json of the priceItem from the requested itemName
 '''
+#FIXME: Write error message for priceItem not found
 def getPrice(itemName,itemPriceId,enterpriseId):
     url = 'https://gateway-staging.ncrcloud.com/catalog/item-prices/%s/%s' %(itemName, itemPriceId)
     headers = {
@@ -121,14 +136,52 @@ def getPrice(itemName,itemPriceId,enterpriseId):
     }
 
     r = requests.get(url, auth=(config.USER, config.PASSWORD), headers=headers)
+
     print(r.json())
 
 '''
-Description:
+Description: This function will get all the priceItems from the given itemNames
 Parameters:
-Returns:
+itemIds [A list of itemNames]
+-enterpriseId [ The alphanumeric id associated with the location. NOTICE: This was created when the site was created. If unknown use query() within siteMaker] 
+Returns: A list of priceItems for the given itemNames
 '''
-#def getAllPrices(itemIds):
+def getAllPrices(itemIds,enterpriseId,):
+    url = 'https://gateway-staging.ncrcloud.com/catalog/item-prices/get-multiple'
+    headers = {
+        'content-type': 'application/json',
+        'nep-organization': 'burgers-unlimited',
+        'nep-correlation-id': '2020-0708',
+        'nep-enterprise-unit': '%s' % enterpriseId,
+    }
+
+    modifiedItems  = createJsonString(itemIds)
+
+    payload = "{\"itemIds\":[%s]}" %modifiedItems
+
+    r = requests.post(url,payload, auth=(config.USER, config.PASSWORD),headers = headers)
+
+    tempPrices = r.json()
+    itemsWithPrices = {}
+
+    #print(tempPrices)
+
+    #print(tempPrices['itemPrices'][0]['priceId']['itemCode'])
+    #print(tempPrices['itemPrices'][0]['price'])
+
+    for item in tempPrices['itemPrices']:
+
+        price = item.get('price')
+        nested = item.get('priceId')
+        name = nested.get('itemCode')
+
+        itemsWithPrices[name] = price
+
+   # for item in tempPrices['itemPrices']:
+    #    itemsWithPrices.append(item.get('price'))
+
+    return itemsWithPrices
+
 
 '''
 Description:
@@ -138,41 +191,34 @@ Returns:
 def addSpacesInbetweenCaptialLetters(str1):
   return re.sub(r"(\w)([A-Z])", r"\1 \2", str1)
 
-
-
 '''
-Description:
-Parameters:
-Returns:
+Description: A helper function to build json strings for the getPriceItems payload.
+Parameters: items [A list of itemNames to be turned into a json string]
+Returns: a string in the correct format for the getPriceItems payload.
 '''
 
+def createJsonString(items):
+    String = ""
 
+    for  item in items:
+        String =  String + "{\"itemCode\":\"%s\"}," %item
 
+    String =String.rstrip(',')
 
-name = 'HamburgerDeluxe'
-itemPriceId= '2'
-version = 5.0
-description = "A 1/4 lb burger grilled to perfection, adorned with lettuce, tomato, onion, and mayonnaise. "
-location = "BurgersUnlimitedMidtown"
-department = "Beef"
-enterpriseId = config.Locations['Burgers Unlimited Midtown']
-
-
-#createItem(name,version,description,location,department, enterpriseId)
-#createPrice(name,itemPriceId,1,8)
-#getPrice(name,itemPriceId,enterpriseId)
-
-#getItem(name)
-
-#getStoreItems('BurgersUnlimitedHighlands')
-
-
-#createItem(name,version,description,location,department,enterpriseId)
-#getItem("HamburgerDeluxe")
-
-
-print(getStoreItems('BurgersUnlimitedMidtown'))
+    return String
 
 
 
 
+
+name = 'Tunaburger'
+itemPriceId= '1'
+version = 1.0
+price = 11
+description = "1/2 lb tuna steak adorned with curly cucumbers, pickled red onion with a garlic cilantro dressing sauce."
+location = SOUTHLAND
+department = "Chicken"
+enterpriseId = config.Locations['Burgers Unlimited Southland']
+
+#createPrice(name,itemPriceId,version,price,enterpriseId)
+print(getPrice(name,itemPriceId,enterpriseId))

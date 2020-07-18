@@ -8,6 +8,11 @@ from requests.auth import HTTPBasicAuth
 from  django.http import HttpResponse
 import config
 import auxMethods
+import catalogMaker
+
+HIGHLANDS = config.Locations['Burgers Unlimited Highlands']
+SOUTHLAND = config.Locations['Burgers Unlimited Southland']
+MIDTOWN = config.Locations ['Burgers Unlimited Midtown']
 
 
 def index(request):
@@ -15,9 +20,7 @@ def index(request):
     return render(request,'index.html')
 
 
-
 def findRestaurant(request):
-
 
     address = request.POST['address']
     radius = int(request.POST['radius'])
@@ -31,13 +34,23 @@ def findRestaurant(request):
 
 
 def midtownMenu(request):
+    items = catalogMaker.getStoreItems('BurgersUnlimitedMidtown')
+    items_prices = catalogMaker.getAllPrices(items,MIDTOWN)
+    context = {'items':items_prices}
 
-    return render(request,'midtownMenu.html')
+    return render(request,'midtownMenu.html',context)
 
 def southlandMenu(request):
 
-    return render(request,'southlandMenu.html')
+    items = catalogMaker.getStoreItems('BurgersUnlimitedSouthland')
+    items_prices = catalogMaker.getAllPrices(items, SOUTHLAND)
+    context = {'items': items_prices}
+
+    return render(request, 'southlandMenu.html', context)
 
 def highlandsMenu(request):
+    items = catalogMaker.getStoreItems('BurgersUnlimitedHighlands')
+    items_prices = catalogMaker.getAllPrices(items, HIGHLANDS)
+    context = {'items': items_prices}
 
-    return render(request,'highlandsMenu.html')
+    return render(request, 'highlandsMenu.html', context)
