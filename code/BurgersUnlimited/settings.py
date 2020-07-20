@@ -248,4 +248,5 @@ USE_TZ = True
 STATICFILES_DIRS = [STATIC_DIR,]
 STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+LOGIN_REDIRECT_URL = '/burger/'
 #>>>>>>> ed6e49b57ecdb16135c229a21a782b9edcd9d0a0
