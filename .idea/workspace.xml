@@ -19,15 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98dfd08e-309a-42b0-b9e7-4ca9875d094b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/BurgersUnlimited/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/BurgersUnlimited/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/BurgersUnlimited/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/BurgersUnlimited/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/code/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/code/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/users/templates/users/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/code/users/templates/users/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/users/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="98dfd08e-309a-42b0-b9e7-4ca9875d094b" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
