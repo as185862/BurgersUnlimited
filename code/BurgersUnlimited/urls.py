@@ -20,11 +20,13 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from burger import views
+from users import views as user_v
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('burger/', include('burger.urls')),
+    path('burger/', include('burger.urls'), name='main-burger'),
     path('', RedirectView.as_view(url='burger/')),
+    path('Register/', user_v.register, name='Register'),
 
 ] + static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
