@@ -2,6 +2,7 @@ import requests
 import config
 import re
 
+
 #TODO: Write method to call down price API results
 #TODO: Combine price array and storeItem array
 #TODO: Rewrite the menu call on the views page to filter name menu correctly
@@ -39,6 +40,7 @@ def createItem(itemName, version, shortDescription ,location, department, enterp
 
     r = requests.put(url, payload, auth=(config.USER, config.PASSWORD), headers=headers)
     print(r)
+    print(r.json)
 
 '''
 Description: This function returns the item details of the itemName passed
@@ -80,11 +82,22 @@ def getStoreItems(storeName):
 
     for item in tempItems['pageContent']:
         for nestedItem in item['itemId'].values():
-            storeItems.append(nestedItem)
+          #  storeItems.update({'name': nestedItem})
+             name = nestedItem
+             department = item['departmentId']
+             result = {}
+             result.update({'name':name, 'department':department})
+             storeItems.append(result)
 
-    #HACK: The  catalog api does not allow deletions. This is removing an error in the catalog
-    if storeName == 'BurgersUnlimitedMidtown':
-        storeItems.remove('HamburgerDeleuxe')
+
+    #if storeName == 'BurgersUnlimitedMidtown':
+       # storeItems.remove()
+
+    # HACK: The  catalog api does not allow deletions. This is removing an error in the catalog
+    for i in range(len(storeItems)):
+        if storeItems[i]['name'] == "HamburgerDeleuxe":
+            del storeItems[i]
+            break
     return storeItems
 
 '''
@@ -126,6 +139,7 @@ Returns: A json of the priceItem from the requested itemName
 '''
 #FIXME: Write error message for priceItem not found
 def getPrice(itemName,itemPriceId,enterpriseId):
+
     url = 'https://gateway-staging.ncrcloud.com/catalog/item-prices/%s/%s' %(itemName, itemPriceId)
     headers = {
         'content-type': 'application/json',
@@ -155,30 +169,60 @@ def getAllPrices(itemIds,enterpriseId,):
         'nep-enterprise-unit': '%s' % enterpriseId,
     }
 
-    modifiedItems  = createJsonString(itemIds)
+    itemNames = []
+
+
+    for i in range(len(itemIds)):
+        #print(itemIds[i]['name'])
+        itemNames.append(itemIds[i]['name'])
+
+    modifiedItems  = createJsonString(itemNames)
 
     payload = "{\"itemIds\":[%s]}" %modifiedItems
 
     r = requests.post(url,payload, auth=(config.USER, config.PASSWORD),headers = headers)
 
     tempPrices = r.json()
-    itemsWithPrices = {}
+
+    print(tempPrices)
+
+
+    itemsWithPrices = []
 
     #print(tempPrices)
 
     #print(tempPrices['itemPrices'][0]['priceId']['itemCode'])
     #print(tempPrices['itemPrices'][0]['price'])
 
-    for item in tempPrices['itemPrices']:
 
+
+
+
+    i = 0
+    for item in tempPrices['itemPrices']:
+        result = {}
         price = item.get('price')
         nested = item.get('priceId')
         name = nested.get('itemCode')
+        name = addSpacesInbetweenCaptialLetters(name)
+        price = addChange(price)
 
-        itemsWithPrices[name] = price
+        if isUnique(itemsWithPrices,name):
+            result.update({'name': name, 'price': price, 'department': itemIds[i]['department']})
+            itemsWithPrices.append(result)
+            i += 1
+        else:
 
-   # for item in tempPrices['itemPrices']:
-    #    itemsWithPrices.append(item.get('price'))
+            result.update({'name': name, 'price': price})
+
+
+    '''    if name in itemsWithPrices.values():
+            result.update({'name':name,'price':price})
+        else:
+            result.update({'name':name,'price':price, 'department':itemIds[i]['department']})
+            itemsWithPrices.append(result)
+            i += 1 '''
+
 
     return itemsWithPrices
 
@@ -208,17 +252,44 @@ def createJsonString(items):
     return String
 
 
+def isUnique(dict_list,item):
+    for d in dict_list:
+        if d['name'] == item:
+            return False
+    return True
 
 
+def addChange(string):
+    string = str(string)
+    if "." not in string:
+        string = string + '.00'
+    return string
 
-name = 'Tunaburger'
+name = 'LargeDrink'
 itemPriceId= '1'
-version = 1.0
-price = 11
-description = "1/2 lb tuna steak adorned with curly cucumbers, pickled red onion with a garlic cilantro dressing sauce."
-location = SOUTHLAND
-department = "Chicken"
+version = 1
+price = 2.25
+description = "A 48oz fountain drink"
+location = "BurgersUnlimitedSouthland"
+department = "Drink"
 enterpriseId = config.Locations['Burgers Unlimited Southland']
 
+#createItem(name,version,description,location,department,enterpriseId)
 #createPrice(name,itemPriceId,version,price,enterpriseId)
-print(getPrice(name,itemPriceId,enterpriseId))
+#print(getPrice(name,itemPriceId,enterpriseId))
+#print(getItem(name))
+
+#print(getPrice(name,itemPriceId,enterpriseId))
+
+#print(getStoreItems("BurgersUnlimitedSouthland"))
+
+midtownItems = getStoreItems("BurgersUnlimitedSouthland")
+#print(getAllPrices(midtownItems,SOUTHLAND))
+#print(getStoreItems("BurgersUnlimitedSouthland"))
+
+#getPrice(name, itemPriceId, enterpriseId)
+
+print(getAllPrices(midtownItems,SOUTHLAND))
+
+
+

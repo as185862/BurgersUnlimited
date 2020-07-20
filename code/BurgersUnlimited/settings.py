@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """
 Django settings for BurgersUnlimited project.
 
@@ -120,7 +120,7 @@ USE_TZ = True
 
 STATICFILES_DIRS = [STATIC_DIR, ]
 STATIC_URL = '/static/'
-=======
+
 """
 Django settings for BurgersUnlimited project.
 
@@ -245,4 +245,4 @@ USE_TZ = True
 
 STATICFILES_DIRS = [STATIC_DIR,]
 STATIC_URL = '/static/'
->>>>>>> ed6e49b57ecdb16135c229a21a782b9edcd9d0a0
+

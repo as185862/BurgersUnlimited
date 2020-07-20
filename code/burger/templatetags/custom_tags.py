@@ -1,8 +1,15 @@
 from django import template
+import random
+
 
 register = template.Library()
 
 
-@register.filter(name='get_value_from_dict')
-def get_value_from_dict(dictionary, key):
-    return dictionary.get(key)
+
+@register.simple_tag
+def randomNumberGenerator():
+    numbers = [1,2,3]
+    return random.choice(numbers)
+
+
+

@@ -6,13 +6,65 @@
 
 {% block content %}
 
-<h6>Southland Menu</h6>
+
+<h2 class="text-center">Southland Menu</h2>
+
+<!-- Main Container -->
+<div class="container-fluid" id="main_container">
+
+    <!-- Sidebar -->
+    <div class="row" id="sidebar">
+            <div class="col-xs-1">
+                <div class="btn-group-vertical">
+                    <button type="button" class="btn btn-custom">Chicken</button>
+                    <button type="button" class="btn btn-custom">Fish</button>
+                    <button type="button" class="btn btn-custom">Sides</button>
+                    <button type="button" class="btn btn-custom">Drinks</button>
+                    <button type="button" class="btn btn-custom">Full Menu</button>
+                </div>
+
+            </div>
 
 
-    {% for item in items %}
-        <p> {{item}} {{items|get_value_from_dict:item}}  </p>
-    {% endfor %}
 
+            <div class="container">
+            <div class="row">
+              {% for item in items %}
+
+                <div class="col-3">
+                <div class="card" >
+
+                    {% randomNumberGenerator as number %}
+
+                    {% if number == 1 %}
+
+                    <div class="card-img-top"> <img class="card-img-top" src="{% static 'images/Left.png' %}"></div>
+
+                    {% elif number == 2 %}
+                    <div class="card-img-top"> <img class="card-img-top" src="{% static 'images/Right.png' %}"></div>
+
+                    {% elif number == 3 %}
+                    <div class="card-img-top"> <img class="card-img-top" src="{% static 'images/Right2.png' %}"></div>
+
+                    {% endif %}
+
+
+                    <div class="card-text text-center">
+                        <p>{{item.name}}  </p>
+                        <p>{{item.price}} </p>
+                        <button class="btn btn-custom">Add</button>
+                    </div>
+                </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+            </div>
+
+    </div>
+
+</div>
 
 
 
