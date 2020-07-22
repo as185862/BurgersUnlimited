@@ -54,3 +54,6 @@ def highlandsMenu(request):
     context = {'items': items_prices}
 
     return render(request, 'highlandsMenu.html', context)
+
+def payment(request):
+    return render(request, 'payment.html')

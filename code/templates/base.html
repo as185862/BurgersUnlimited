@@ -17,14 +17,20 @@
 <nav class="navbar navbar-expand-md navbar-custom ">
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link" href="#">Link 1</a>
+            <a class="nav-link" href="/burger/">Home</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Link 2</a>
+            <a class="nav-link" href="{% url 'Register' %}">Register</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Link 3</a>
-        </li>
+        {% endif %}
     </ul>
     <span class="ml-md-auto">
 
@@ -36,7 +42,13 @@
 
 </nav>
 
-
+{% if messages %}
+    {% for msg in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 
 {% block content %} {% endblock %}
 </body>
